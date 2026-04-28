@@ -1,7 +1,50 @@
 {% extends "base.html" %}
 
-{% block title %}食譜列表 - 食譜收藏夾{% endblock %}
+{% block title %}{{ title }} - 食譜收藏夾{% endblock %}
 
 {% block content %}
-    <!-- 搜尋結果或特定標籤下的食譜列表預留區塊 -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>{{ title }}</h2>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% if recipes %}
+        {% for recipe in recipes %}
+        <div class="col">
+            <div class="card h-100 recipe-card shadow-sm">
+                {% if recipe.image_path %}
+                <img src="{{ url_for('static', filename='uploads/' + recipe.image_path) }}" class="card-img-top" alt="{{ recipe.title }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <span class="text-muted">無圖片</span>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {{ recipe.title }}
+                        {% if recipe.is_favorite %}
+                        <span class="badge bg-danger">❤️ 最愛</span>
+                        {% endif %}
+                    </h5>
+                    <p class="card-text text-truncate">{{ recipe.notes or '暫無心得' }}</p>
+                    
+                    <div class="mb-2">
+                        {% for tag in recipe.tags %}
+                        <a href="{{ url_for('main.tag_filter', tag_id=tag.id) }}" class="badge bg-secondary text-decoration-none">{{ tag.name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-top-0">
+                    <a href="{{ url_for('recipe.detail', id=recipe.id) }}" class="btn btn-outline-primary w-100">查看詳情</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12 text-center py-5">
+            <h4 class="text-muted">沒有找到相關食譜</h4>
+            <a href="{{ url_for('main.index') }}" class="btn btn-primary mt-2">回首頁</a>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

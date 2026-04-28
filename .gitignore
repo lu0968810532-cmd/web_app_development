@@ -1,0 +1,28 @@
+# Virtual Environment
+.venv/
+venv/
+env/
+
+# Python Cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Flask & Environment Variables
+.env
+instance/
+*.sqlite3
+
+# Uploads
+app/static/uploads/*
+!app/static/uploads/.gitkeep
+
+# IDEs & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# AI Agents
+.gemini/

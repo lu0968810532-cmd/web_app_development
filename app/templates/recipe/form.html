@@ -1,7 +1,59 @@
 {% extends "base.html" %}
 
-{% block title %}食譜表單 - 食譜收藏夾{% endblock %}
+{% block title %}{% if recipe %}編輯食譜{% else %}新增食譜{% endif %} - 食譜收藏夾{% endblock %}
 
 {% block content %}
-    <!-- 新增或編輯食譜的輸入表單預留區塊 -->
+<div class="row mb-5">
+    <div class="col-md-8 offset-md-2">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h2 class="mb-0">{% if recipe %}編輯食譜{% else %}新增食譜{% endif %}</h2>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('recipe.edit', id=recipe.id) if recipe else url_for('recipe.new') }}" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">食譜標題 <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="title" name="title" value="{{ recipe.title if recipe else '' }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="tags" class="form-label">標籤</label>
+                        <input type="text" class="form-control" id="tags" name="tags" value="{% if recipe %}{{ recipe.tags|map(attribute='name')|join(', ') }}{% endif %}" placeholder="例如：中式, 甜點, 減脂 (使用逗號分隔)">
+                        <div class="form-text">輸入多個標籤請用逗號分隔</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="image" class="form-label">上傳圖片</label>
+                        <input class="form-control" type="file" id="image" name="image" accept="image/*">
+                        {% if recipe and recipe.image_path %}
+                        <div class="mt-2">
+                            <small class="text-muted">目前已有圖片：{{ recipe.image_path }}</small>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="ingredients" class="form-label">食材清單</label>
+                        <textarea class="form-control" id="ingredients" name="ingredients" rows="4">{{ recipe.ingredients if recipe else '' }}</textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="steps" class="form-label">烹飪步驟</label>
+                        <textarea class="form-control" id="steps" name="steps" rows="6">{{ recipe.steps if recipe else '' }}</textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">個人心得</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3">{{ recipe.notes if recipe else '' }}</textarea>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{% if recipe %}{{ url_for('recipe.detail', id=recipe.id) }}{% else %}{{ url_for('main.index') }}{% endif %}" class="btn btn-outline-secondary">取消</a>
+                        <button type="submit" class="btn btn-success">儲存食譜</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

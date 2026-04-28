@@ -3,5 +3,64 @@
 {% block title %}首頁 - 食譜收藏夾{% endblock %}
 
 {% block content %}
-    <!-- 首頁內容：隨機選餐推薦、最新食譜列表等預留區塊 -->
+<div class="row mb-4 align-items-center">
+    <div class="col-md-8">
+        <h1 class="display-5 fw-bold">歡迎來到食譜收藏夾</h1>
+        <p class="lead">紀錄您的私房菜、實驗心得與最愛美食。今天想吃點什麼呢？</p>
+    </div>
+    <div class="col-md-4 text-md-end">
+        <a href="{{ url_for('recipe.random_recipe') }}" class="btn btn-warning btn-lg shadow-sm">
+            🎲 不知道吃什麼？<br><small>幫我隨機選一餐</small>
+        </a>
+    </div>
+</div>
+
+<hr class="my-4">
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>最新食譜</h2>
+    <a href="{{ url_for('recipe.new') }}" class="btn btn-sm btn-outline-success">新增食譜</a>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% if recipes %}
+        {% for recipe in recipes %}
+        <div class="col">
+            <div class="card h-100 recipe-card shadow-sm">
+                {% if recipe.image_path %}
+                <img src="{{ url_for('static', filename='uploads/' + recipe.image_path) }}" class="card-img-top" alt="{{ recipe.title }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <span class="text-muted">無圖片</span>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {{ recipe.title }}
+                        {% if recipe.is_favorite %}
+                        <span class="badge bg-danger">❤️ 最愛</span>
+                        {% endif %}
+                    </h5>
+                    <p class="card-text text-truncate">{{ recipe.notes or '暫無心得' }}</p>
+                    
+                    <div class="mb-2">
+                        {% for tag in recipe.tags %}
+                        <a href="{{ url_for('main.tag_filter', tag_id=tag.id) }}" class="badge bg-secondary text-decoration-none">{{ tag.name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-top-0">
+                    <a href="{{ url_for('recipe.detail', id=recipe.id) }}" class="btn btn-outline-primary w-100">查看詳情</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12 text-center py-5">
+            <h4 class="text-muted">目前還沒有任何食譜</h4>
+            <p>趕快點擊上方按鈕，建立你的第一份專屬食譜吧！</p>
+            <a href="{{ url_for('recipe.new') }}" class="btn btn-success mt-2">開始新增</a>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}
